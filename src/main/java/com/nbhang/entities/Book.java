@@ -1,10 +1,14 @@
 package com.nbhang.entities;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.Hibernate;
-import java.util.Objects;
 
+import com.nbhang.validators.annotations.ValidCategoryId;
+
+import java.util.Objects;
 @Getter
 @Setter
 @ToString

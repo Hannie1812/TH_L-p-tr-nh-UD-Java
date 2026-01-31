@@ -8,10 +8,14 @@ import com.nbhang.services.CartService;
 import com.nbhang.daos.Item;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -40,52 +44,57 @@ public class BookController {
         }
 
         @GetMapping("/add")
-        public String showAddForm(Model model) {
+        public String addBookForm(@NotNull Model model) {
                 model.addAttribute("book", new Book());
-                model.addAttribute("categories", categoryService.getAllCategories());
+                model.addAttribute("categories",
+                                categoryService.getAllCategories());
                 return "book/add";
         }
 
         @PostMapping("/add")
-        public String addBook(@ModelAttribute("book") Book book, RedirectAttributes redirectAttributes) {
-                try {
-                        bookService.addBook(book);
-                        redirectAttributes.addFlashAttribute("successMessage", "Book added successfully!");
-                        return "redirect:/books";
-                } catch (Exception e) {
-                        redirectAttributes.addFlashAttribute("errorMessage", "Add book failed: " + e.getMessage());
-                        return "redirect:/books/add";
+        public String addBook(
+                        @Valid @ModelAttribute("book") Book book,
+                        @NotNull BindingResult bindingResult,
+                        Model model) {
+                if (bindingResult.hasErrors()) {
+                        var errors = bindingResult.getAllErrors()
+                                        .stream()
+                                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                                        .toArray(String[]::new);
+                        model.addAttribute("errors", errors);
+                        model.addAttribute("categories",
+                                        categoryService.getAllCategories());
+                        return "book/add";
                 }
+                bookService.addBook(book);
+                return "redirect:/books";
         }
 
         @GetMapping("/edit/{id}")
-        public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-                try {
-                        Book book = bookService.getBookById(id);
-                        if (book != null) {
-                                model.addAttribute("book", book);
-                                model.addAttribute("categories", categoryService.getAllCategories());
-                                return "book/edit";
-                        } else {
-                                redirectAttributes.addFlashAttribute("errorMessage", "Book not found!");
-                                return "redirect:/books";
-                        }
-                } catch (Exception e) {
-                        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-                        return "redirect:/books";
-                }
+        public String editBookForm(@NotNull Model model, @PathVariable long id) 
+        {
+                var book = bookService.getBookById(id);
+                model.addAttribute("book", book.orElseThrow(() -> new IllegalArgumentException("Book not found")));
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "book/edit";
         }
 
         @PostMapping("/edit")
-        public String editBook(@ModelAttribute("book") Book book, RedirectAttributes redirectAttributes) {
-                try {
-                        bookService.updateBook(book);
-                        redirectAttributes.addFlashAttribute("successMessage", "Book updated successfully!");
-                        return "redirect:/books";
-                } catch (Exception e) {
-                        redirectAttributes.addFlashAttribute("errorMessage", "Update book failed: " + e.getMessage());
-                        return "redirect:/books/edit/" + book.getId();
+        public String editBook(@Valid @ModelAttribute("book") Book book,
+                        @NotNull BindingResult bindingResult,
+                        Model model) {
+                if (bindingResult.hasErrors()) {
+                        var errors = bindingResult.getAllErrors()
+                                        .stream()
+                                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                                        .toArray(String[]::new);
+                        model.addAttribute("errors", errors);
+                        model.addAttribute("categories",
+                                        categoryService.getAllCategories());
+                        return "book/edit";
                 }
+                bookService.updateBook(book);
+                return "redirect:/books";
         }
 
         @GetMapping("/delete/{id}")
