@@ -18,21 +18,24 @@
             <input type="hidden" th:field="*{id}">
             <div class="col-6 mb-3">
                 <label class="form-label" for="title">Title:</label>
-                <input class="form-control" type="text" th:field="*{title}" id="title">
+                <input class="form-control" type="text" th:field="*{title}" id="title" required>
             </div>
             <div class="col-6 mb-3">
                 <label class="form-label" for="author">Author:</label>
-                <input class="form-control" type="text" th:field="*{author}" id="author">
+                <input class="form-control" type="text" th:field="*{author}" id="author" required>
             </div>
             <div class="col-6 mb-3">
                 <label class="form-label" for="price">Price:</label>
-                <input class="form-control" type="text" th:field="*{price}" id="price">
+                <input class="form-control" type="number" th:field="*{price}" id="price" step="0.01" required>
             </div>
             <div class="col-6 mb-3">
                 <label class="form-label" for="category">Category:</label>
-                <input class="form-control" type="text" th:field="*{category}" id="category">
+                <select class="form-control" th:field="*{category.id}" id="category" required>
+                    <option value="" label="-- Select Category --"></option>
+                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                </select>
             </div>
-            <input type="submit" value="Save">
+            <input type="submit" class="btn btn-primary" value="Save">
         </form>
         <br>
         <a th:href="@{/books}">Back to List</a>

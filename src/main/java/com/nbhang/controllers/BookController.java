@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/books")
@@ -36,6 +37,67 @@ public class BookController {
                 model.addAttribute("totalPages",
                                 bookService.getAllBooks(pageNo, pageSize, sortBy).size() / pageSize);
                 return "book/list";
+        }
+
+        @GetMapping("/add")
+        public String showAddForm(Model model) {
+                model.addAttribute("book", new Book());
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "book/add";
+        }
+
+        @PostMapping("/add")
+        public String addBook(@ModelAttribute("book") Book book, RedirectAttributes redirectAttributes) {
+                try {
+                        bookService.addBook(book);
+                        redirectAttributes.addFlashAttribute("successMessage", "Book added successfully!");
+                        return "redirect:/books";
+                } catch (Exception e) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Add book failed: " + e.getMessage());
+                        return "redirect:/books/add";
+                }
+        }
+
+        @GetMapping("/edit/{id}")
+        public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+                try {
+                        Book book = bookService.getBookById(id);
+                        if (book != null) {
+                                model.addAttribute("book", book);
+                                model.addAttribute("categories", categoryService.getAllCategories());
+                                return "book/edit";
+                        } else {
+                                redirectAttributes.addFlashAttribute("errorMessage", "Book not found!");
+                                return "redirect:/books";
+                        }
+                } catch (Exception e) {
+                        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+                        return "redirect:/books";
+                }
+        }
+
+        @PostMapping("/edit")
+        public String editBook(@ModelAttribute("book") Book book, RedirectAttributes redirectAttributes) {
+                try {
+                        bookService.updateBook(book);
+                        redirectAttributes.addFlashAttribute("successMessage", "Book updated successfully!");
+                        return "redirect:/books";
+                } catch (Exception e) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Update book failed: " + e.getMessage());
+                        return "redirect:/books/edit/" + book.getId();
+                }
+        }
+
+        @GetMapping("/delete/{id}")
+        public String deleteBook(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+                try {
+                        bookService.deleteBookById(id);
+                        redirectAttributes.addFlashAttribute("successMessage", "Book deleted successfully!");
+                        return "redirect:/books";
+                } catch (Exception e) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Delete book failed: " + e.getMessage());
+                        return "redirect:/books";
+                }
         }
 
         @PostMapping("/add-to-cart")
