@@ -3,6 +3,8 @@ package com.nbhang.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -10,23 +12,20 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Entity
 @Builder
-@Table(name = "book")
-public class Book {
+@Entity
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @Column(name = "title", length = 50, nullable = false)
-    private String title;
-    @Column(name = "author", length = 50, nullable = false)
-    private String author;
-    @Column(name = "price")
-    private Double price;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @Column(name = "name", length = 50, nullable = false)
+    private String name;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private Category category;
+    @Builder.Default
+    private List<Book> books = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -34,9 +33,9 @@ public class Book {
             return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
-        Book book = (Book) o;
+        Category category = (Category) o;
         return getId() != null && Objects.equals(getId(),
-                book.getId());
+                category.getId());
     }
 
     @Override
