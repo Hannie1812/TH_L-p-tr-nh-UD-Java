@@ -2,6 +2,7 @@ package com.nbhang.services;
 
 import com.nbhang.entities.User;
 import com.nbhang.repositories.IUserRepository;
+import com.nbhang.constants.Provider;
 
 import java.util.Optional;
 
@@ -35,5 +36,18 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username);
+    }
+
+    public void saveOauthUser(String email, @NotNull String username) {
+        if (userRepository.findByUsername(username) != null) {
+            return;
+        }
+        var user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(new BCryptPasswordEncoder().encode(username));
+        user.setProvider(Provider.GOOGLE.value);
+        //user.getRoles().add(roleRepository.findRoleById(Role.USER.value));
+        userRepository.save(user);
     }
 }
