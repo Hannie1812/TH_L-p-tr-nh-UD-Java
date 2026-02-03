@@ -4,8 +4,6 @@ import com.nbhang.services.UserService;
 import com.nbhang.services.OAuthService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,12 +22,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
         private final OAuthService oAuthService;
-        @Autowired
         private final UserService userService;
 
         @Bean
         public UserDetailsService userDetailsService() {
-                return userService;
+                return new UserService();
         }
 
         @Bean
@@ -55,11 +52,11 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers("/books/edit/**",
                                                                 "/books/add", "/books/delete")
-                                                .authenticated()
+                                                .hasAnyAuthority("ADMIN")
                                                 .requestMatchers("/books", "/cart", "/cart/**")
-                                                .authenticated()
+                                                .hasAnyAuthority("ADMIN", "USER")
                                                 .requestMatchers("/api/**")
-                                                .authenticated()
+                                                .hasAnyAuthority("ADMIN", "USER")
                                                 .anyRequest().authenticated())
                                 .logout(logout -> logout
                                                 .logoutUrl("/logout")
@@ -85,7 +82,6 @@ public class SecurityConfig {
                                                                                                 authentication) -> {
                                                                                         var oidcUser = (DefaultOidcUser) authentication
                                                                                                         .getPrincipal();
-
                                                                                         userService.saveOauthUser(
                                                                                                         oidcUser.getEmail(),
                                                                                                         oidcUser.getName());

@@ -10,6 +10,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -54,9 +55,24 @@ public class User implements UserDetails {
     @ToString.Exclude
     private Set<Invoice> invoices = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        Set<Role> userRoles = this.getRoles();
+        return userRoles.stream()
+                .map(role -> {
+                    String name = role.getName();
+                    if (name == null) return null;
+                    if (!name.startsWith("ROLE_")) {
+                        name = "ROLE_" + name;
+                    }
+                    return new SimpleGrantedAuthority(name);
+                })
+                .filter(java.util.Objects::nonNull)
+                .toList();
     }
 
     @Override

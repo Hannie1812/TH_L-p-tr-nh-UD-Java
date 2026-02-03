@@ -7,7 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initialscale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My App</title>
     <link
       th:fragment="link-css"
@@ -28,7 +28,7 @@
           <button
             class="navbar-toggler"
             type="button"
-            data-bstoggle="collapse"
+            data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
@@ -41,11 +41,20 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              <li class="nav-item">
+              <li
+                class="nav-item"
+                sec:authorize="hasAnyAuthority('ADMIN', 'USER')"
+              >
                 <a class="nav-link" href="/books"> List Book </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
                 <a class="nav-link" href="/books/add"> Add Book </a>
+              </li>
+              <li
+                class="nav-item"
+                sec:authorize="hasAnyAuthority('ADMIN', 'USER')"
+              >
+                <a class="nav-link" href="/cart"> Cart </a>
               </li>
               <li sec:authorize="isAuthenticated()">
                 <form th:action="@{/logout}" method="post">

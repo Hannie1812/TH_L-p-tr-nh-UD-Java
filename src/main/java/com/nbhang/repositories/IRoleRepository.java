@@ -1,10 +1,10 @@
 package com.nbhang.repositories;
 
-import com.nbhang.entities.User;
+import com.nbhang.entities.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IUserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+public interface IRoleRepository extends JpaRepository<Role, Long> {
+    Role findRoleById(Long id);
 }
