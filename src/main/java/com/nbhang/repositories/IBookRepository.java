@@ -34,6 +34,13 @@ public interface IBookRepository extends PagingAndSortingRepository<Book, Long>,
     // findAll, etc.
     @Query("""
             SELECT b FROM Book b
+            WHERE (:keyword IS NULL OR b.title LIKE %:keyword% OR b.author LIKE %:keyword% OR b.category.name LIKE %:keyword%)
+            AND (:categoryId IS NULL OR b.category.id = :categoryId)
+            """)
+    List<Book> searchBookAdvanced(@Param("keyword") String keyword, @Param("categoryId") Long categoryId);
+
+    @Query("""
+            SELECT b FROM Book b
             WHERE b.title LIKE %?1%
             OR b.author LIKE %?1%
             OR b.category.name LIKE %?1%

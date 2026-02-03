@@ -64,4 +64,11 @@ public class BookService {
     public List<Book> searchBook(String keyword) {
         return bookRepository.searchBook(keyword);
     }
+
+    public List<Book> searchBook(String keyword, Long categoryId) {
+        if ((keyword == null || keyword.isEmpty()) && categoryId == null) {
+            return bookRepository.findAll();
+        }
+        return bookRepository.searchBookAdvanced(keyword, categoryId);
+    }
 }

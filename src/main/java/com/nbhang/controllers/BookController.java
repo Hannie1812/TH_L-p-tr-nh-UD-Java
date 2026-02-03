@@ -203,18 +203,15 @@ public class BookController {
         @GetMapping("/search")
         public String searchBook(
                         @NotNull Model model,
-                        @RequestParam String keyword,
+                        @RequestParam(required = false) String keyword,
+                        @RequestParam(required = false) Long categoryId,
                         @RequestParam(defaultValue = "0") Integer pageNo,
                         @RequestParam(defaultValue = "20") Integer pageSize,
                         @RequestParam(defaultValue = "id") String sortBy) {
-                model.addAttribute("books", bookService.searchBook(keyword));
+                model.addAttribute("books", bookService.searchBook(keyword, categoryId));
                 model.addAttribute("currentPage", pageNo);
-                model.addAttribute("totalPages",
-                                bookService
-                                                .getAllBooks(pageNo, pageSize, sortBy)
-                                                .size() / pageSize);
-                model.addAttribute("categories",
-                                categoryService.getAllCategories());
+                model.addAttribute("totalPages", 1); // Simplification for search results
+                model.addAttribute("categories", categoryService.getAllCategories());
                 return "book/list";
         }
 }

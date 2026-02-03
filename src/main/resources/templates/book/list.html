@@ -17,21 +17,12 @@
     <!-- Header Section -->
     <div class="row mb-4">
       <div class="col-md-12">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h1 class="gradient-text">My Book Collection</h1>
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="gradient-text">Bộ Sưu Tập Sách</h1>
           <a href="/books/add" class="btn btn-primary" sec:authorize="hasAuthority('ADMIN')">
-            + Add New Book
+            + Thêm Sách Mới
           </a>
         </div>
-
-        <!-- Search Bar -->
-        <form class="d-flex mb-3" th:action="@{/books/search}" method="get">
-          <input class="form-control me-2" type="search" placeholder="Search by title or author..." aria-label="Search"
-            name="keyword" />
-          <button class="btn btn-outline-primary" type="submit">
-            Search
-          </button>
-        </form>
       </div>
     </div>
 
@@ -54,32 +45,32 @@
           <div class="book-image-container">
             <img th:if="${book.imageUrl != null and !book.imageUrl.isEmpty()}"
               th:src="@{/images/books/{filename}(filename=${book.imageUrl})}" class="card-img-top book-cover"
-              alt="Book cover" />
+              alt="Ảnh bìa" />
             <img th:if="${book.imageUrl == null or book.imageUrl.isEmpty()}" th:src="@{/images/placeholder-book.jpg}"
-              class="card-img-top book-cover placeholder-image" alt="No cover" />
+              class="card-img-top book-cover placeholder-image" alt="Không có ảnh" />
 
             <!-- Stock Badge -->
             <div class="position-absolute top-0 end-0 m-2">
-              <span th:if="${book.quantity == 0}" class="badge bg-danger">Out of Stock</span>
-              <span th:if="${book.quantity > 0 and book.quantity < 10}" class="badge bg-warning text-dark">Low
-                Stock</span>
-              <span th:if="${book.quantity >= 10}" class="badge bg-success">In Stock</span>
+              <span th:if="${book.quantity == 0}" class="badge bg-danger">Hết hàng</span>
+              <span th:if="${book.quantity > 0 and book.quantity < 10}" class="badge bg-warning text-dark">Sắp hết
+                hàng</span>
+              <span th:if="${book.quantity >= 10}" class="badge bg-success">Còn hàng</span>
             </div>
           </div>
 
           <!-- Card Body -->
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title" th:text="${book.title}">Book Title</h5>
+            <h5 class="card-title" th:text="${book.title}">Tiêu đề sách</h5>
             <p class="card-text text-muted mb-1">
-              <small>by <span th:text="${book.author}">Author</span></small>
+              <small>Tác giả: <span th:text="${book.author}">Tác giả</span></small>
             </p>
             <p class="card-text mb-2">
-              <span class="badge bg-secondary" th:text="${book.category.name}">Category</span>
+              <span class="badge bg-secondary" th:text="${book.category.name}">Thể loại</span>
             </p>
             <div class="mt-auto">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="h5 mb-0 text-primary" th:text="${'$' + book.price}">$0.00</span>
-                <small class="text-muted" th:text="${book.quantity + ' left'}">0 left</small>
+                <span class="h5 mb-0 text-primary" th:text="${book.price + ' VNĐ'}">0 VNĐ</span>
+                <small class="text-muted" th:text="${'Còn ' + book.quantity}">Còn 0</small>
               </div>
             </div>
           </div>
@@ -93,19 +84,19 @@
                 <input type="hidden" name="name" th:value="${book.title}" />
                 <input type="hidden" name="price" th:value="${book.price}" />
                 <button type="submit" class="btn btn-success w-100" th:disabled="${book.quantity == 0}"
-                  onclick="return confirm('Add this book to cart?')">
-                  🛒 Add to Cart
+                  onclick="return confirm('Thêm sách này vào giỏ hàng?')">
+                  🛒 Thêm vào giỏ
                 </button>
               </form>
 
               <!-- Admin Actions -->
               <div class="btn-group w-100" role="group" sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/books/edit/{id}(id=${book.id})}" class="btn btn-sm btn-outline-primary">
-                  Edit
+                  Sửa
                 </a>
                 <a th:href="@{/books/delete/{id}(id=${book.id})}" class="btn btn-sm btn-outline-danger"
-                  onclick="return confirm('Delete this book?')">
-                  Delete
+                  onclick="return confirm('Bạn có chắc chắn muốn xóa sách này?')">
+                  Xóa
                 </a>
               </div>
             </div>

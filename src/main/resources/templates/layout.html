@@ -26,34 +26,51 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">Home</a>
+              <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-              <a class="nav-link" href="/books">Books</a>
+              <a class="nav-link" href="/books">Sách</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
-              <a class="nav-link" href="/books/add">Add Book</a>
+              <a class="nav-link" href="/books/add">Thêm sách</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-              <a class="nav-link" href="/cart">Cart</a>
+              <a class="nav-link" href="/cart">Giỏ hàng</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-              <a class="nav-link" href="/profile">Profile</a>
+              <a class="nav-link" href="/profile">Cá nhân</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
-              <a class="nav-link" href="/admin/users">Admin Users</a>
+              <a class="nav-link" href="/admin/users">Quản trị viên</a>
             </li>
           </ul>
+
+          <!-- Search Form in Navbar -->
+          <form class="d-flex mx-auto search-form" th:action="@{/books/search}" method="get"
+            style="max-width: 500px; width: 100%;">
+            <select class="form-select me-2 search-select" name="categoryId"
+              style="width: auto; border-radius: 20px 0 0 20px; background: rgba(255,255,255,0.9);">
+              <option value="">Tất cả thể loại</option>
+              <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+            </select>
+            <input class="form-control me-2 search-input" type="search" name="keyword" placeholder="Tìm kiếm sách..."
+              aria-label="Search" style="border-radius: 0; background: rgba(255,255,255,0.9);">
+            <button class="btn btn-primary search-btn" type="submit"
+              style="border-radius: 0 20px 20px 0; padding: 0.5rem 1.5rem;">
+              Tìm
+            </button>
+          </form>
+
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li sec:authorize="isAuthenticated()">
+            <li sec:authorize="isAuthenticated()" class="nav-item">
               <form th:action="@{/logout}" method="post" class="d-inline">
-                <button class="btn btn-outline-danger" type="submit">
-                  Logout
+                <button class="btn btn-outline-danger ms-2" type="submit">
+                  Đăng xuất
                 </button>
               </form>
             </li>
-            <li sec:authorize="!isAuthenticated()">
-              <a class="btn btn-outline-primary" href="/login">Login</a>
+            <li sec:authorize="!isAuthenticated()" class="nav-item">
+              <a class="btn btn-outline-primary" href="/login">Đăng nhập</a>
             </li>
           </ul>
         </div>
@@ -73,7 +90,7 @@
         <a href="https://www.hutech.edu.vn/">2280600869_Ngo Bich Hang</a>
       </p>
       <p class="mb-0 mt-2" style="font-size: 0.9rem; opacity: 0.9;">
-        Modern Book Management System
+        Hệ thống Quản lý Sách Hiện đại
       </p>
     </div>
     <script th:src="@{/js/bootstrap.min.js}"></script>
