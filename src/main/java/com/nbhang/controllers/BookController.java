@@ -70,18 +70,34 @@ public class BookController {
                         return "book/add";
                 }
 
+                System.out.println("========== ADD BOOK ==========");
+                System.out.println("ImageFile: " + imageFile);
+                if (imageFile != null) {
+                        System.out.println("  - Name: " + imageFile.getOriginalFilename());
+                        System.out.println("  - Size: " + imageFile.getSize());
+                        System.out.println("  - Empty: " + imageFile.isEmpty());
+                }
+
                 // Save book first to get the ID
                 Book savedBook = bookService.addBook(book);
+                System.out.println("Book saved with ID: " + savedBook.getId());
 
                 // Handle image upload if provided
                 if (imageFile != null && !imageFile.isEmpty()) {
+                        System.out.println("Uploading image...");
                         try {
                                 String filename = fileStorageService.storeFile(imageFile, savedBook.getId());
+                                System.out.println("File stored: " + filename);
                                 savedBook.setImageUrl(filename);
                                 bookService.updateBook(savedBook);
+                                System.out.println("Book updated with imageUrl");
                         } catch (Exception e) {
+                                System.err.println("Upload failed: " + e.getMessage());
+                                e.printStackTrace();
                                 model.addAttribute("error", "Failed to upload image: " + e.getMessage());
                         }
+                } else {
+                        System.out.println("No image to upload");
                 }
 
                 return "redirect:/books";
@@ -111,27 +127,46 @@ public class BookController {
                         return "book/edit";
                 }
 
+                System.out.println("========== EDIT BOOK ==========");
+                System.out.println("Book ID: " + book.getId());
+                System.out.println("Current imageUrl from form: " + book.getImageUrl());
+                System.out.println("ImageFile parameter: " + imageFile);
+                if (imageFile != null) {
+                        System.out.println("  - Name: " + imageFile.getOriginalFilename());
+                        System.out.println("  - Size: " + imageFile.getSize());
+                        System.out.println("  - Empty: " + imageFile.isEmpty());
+                }
+
                 // Handle image upload if new image provided
                 if (imageFile != null && !imageFile.isEmpty()) {
+                        System.out.println("Uploading new image...");
                         try {
                                 // Get old image URL to delete later
                                 var existingBook = bookService.getBookById(book.getId());
                                 String oldImageUrl = existingBook.map(Book::getImageUrl).orElse(null);
+                                System.out.println("Old imageUrl from DB: " + oldImageUrl);
 
                                 // Save new image
                                 String filename = fileStorageService.storeFile(imageFile, book.getId());
+                                System.out.println("New file stored: " + filename);
                                 book.setImageUrl(filename);
 
                                 // Delete old image if exists
                                 if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
                                         fileStorageService.deleteFile(oldImageUrl);
+                                        System.out.println("Old image deleted: " + oldImageUrl);
                                 }
                         } catch (Exception e) {
+                                System.err.println("Upload failed: " + e.getMessage());
+                                e.printStackTrace();
                                 model.addAttribute("error", "Failed to upload image: " + e.getMessage());
                         }
+                } else {
+                        System.out.println("No new image - keeping existing imageUrl: " + book.getImageUrl());
                 }
 
                 bookService.updateBook(book);
+                System.out.println("Book updated with final imageUrl: " + book.getImageUrl());
                 return "redirect:/books";
         }
 

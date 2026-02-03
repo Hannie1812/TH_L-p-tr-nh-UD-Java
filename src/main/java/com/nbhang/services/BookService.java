@@ -53,13 +53,14 @@ public class BookService {
         existingBook.setPrice(book.getPrice());
         existingBook.setQuantity(book.getQuantity());
         existingBook.setCategory(book.getCategory());
+        existingBook.setImageUrl(book.getImageUrl());
         bookRepository.save(existingBook);
     }
 
     public void deleteBookById(Long id) {
         bookRepository.deleteById(id);
     }
-    
+
     public List<Book> searchBook(String keyword) {
         return bookRepository.searchBook(keyword);
     }

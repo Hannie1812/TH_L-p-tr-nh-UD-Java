@@ -52,9 +52,10 @@
         <div class="card h-100 book-card">
           <!-- Book Cover Image -->
           <div class="book-image-container">
-            <img th:if="${book.imageUrl != null}" th:src="@{'/images/books/' + ${book.imageUrl}}"
-              class="card-img-top book-cover" alt="Book cover" />
-            <img th:unless="${book.imageUrl != null}" src="/images/placeholder-book.jpg"
+            <img th:if="${book.imageUrl != null and !book.imageUrl.isEmpty()}"
+              th:src="@{/images/books/{filename}(filename=${book.imageUrl})}" class="card-img-top book-cover"
+              alt="Book cover" />
+            <img th:if="${book.imageUrl == null or book.imageUrl.isEmpty()}" th:src="@{/images/placeholder-book.jpg}"
               class="card-img-top book-cover placeholder-image" alt="No cover" />
 
             <!-- Stock Badge -->

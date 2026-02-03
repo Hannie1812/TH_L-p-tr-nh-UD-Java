@@ -52,9 +52,10 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
                 return http
-                .authorizeHttpRequests(auth -> auth
+                                .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/css/**", "/js/**", "/",
-                                                                "/oauth/**", "/register", "/error")
+                                                                "/oauth/**", "/register", "/error",
+                                                                "/test/**", "/images/**")
                                                 .permitAll()
                                                 .requestMatchers("/books/edit/**",
                                                                 "/books/add", "/books/delete")
@@ -93,13 +94,19 @@ public class SecurityConfig {
                                                                                         try {
                                                                                                 var oidcUser = (DefaultOidcUser) authentication
                                                                                                                 .getPrincipal();
-                                                                                                log.info("Google OAuth login attempt for email: {}", oidcUser.getEmail());
+                                                                                                log.info("Google OAuth login attempt for email: {}",
+                                                                                                                oidcUser.getEmail());
                                                                                                 userService.saveOauthUser(
                                                                                                                 oidcUser.getEmail(),
                                                                                                                 oidcUser.getName());
-                                                                                                // Load user by email để đảm bảo lấy đúng user vừa tạo
-                                                                                                var userDetails = userService.loadUserByUsername(oidcUser.getEmail());
-                                                                                                log.info("Loaded user authorities: {}", userDetails.getAuthorities());
+                                                                                                // Load user by email để
+                                                                                                // đảm bảo lấy đúng user
+                                                                                                // vừa tạo
+                                                                                                var userDetails = userService
+                                                                                                                .loadUserByUsername(
+                                                                                                                                oidcUser.getEmail());
+                                                                                                log.info("Loaded user authorities: {}",
+                                                                                                                userDetails.getAuthorities());
                                                                                                 var authToken = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                                                                                                                 userDetails,
                                                                                                                 null,
@@ -108,10 +115,13 @@ public class SecurityConfig {
                                                                                                                 .getContext()
                                                                                                                 .setAuthentication(
                                                                                                                                 authToken);
-                                                                                                response.sendRedirect("/");
+                                                                                                response.sendRedirect(
+                                                                                                                "/");
                                                                                         } catch (Exception e) {
-                                                                                                log.error("Error during OAuth2 login", e);
-                                                                                                response.sendRedirect("/login?error=oauth2");
+                                                                                                log.error("Error during OAuth2 login",
+                                                                                                                e);
+                                                                                                response.sendRedirect(
+                                                                                                                "/login?error=oauth2");
                                                                                         }
                                                                                 })
                                                                 .permitAll())
