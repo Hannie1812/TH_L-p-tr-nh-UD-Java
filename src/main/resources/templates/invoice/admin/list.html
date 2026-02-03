@@ -1,0 +1,124 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Đơn Hàng - Hannie Book</title>
+    <link th:replace="~{layout::link-css}" />
+    <link th:replace="~{layout::custom-css}" />
+</head>
+
+<body>
+    <header th:replace="~{layout::header}"></header>
+
+    <div class="container mt-4 animate-fade-in">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="gradient-text mb-0">Quản Lý Đơn Hàng</h1>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4"
+            role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4"
+            role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="glass-card shadow-sm overflow-hidden" style="border-radius: 1.5rem;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Mã ĐH</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end pe-4">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td class="ps-4 fw-bold" th:text="'#' + ${order.id}"></td>
+                            <td>
+                                <div th:if="${order.user != null}">
+                                    <div class="fw-bold" th:text="${order.user.username}"></div>
+                                    <small class="text-muted" th:text="${order.user.email}"></small>
+                                </div>
+                                <div th:if="${order.user == null}" class="text-muted small italic">Khách vãng lai</div>
+                            </td>
+                            <td
+                                th:text="${order.invoiceDate != null ? #dates.format(order.invoiceDate, 'dd/MM/yyyy HH:mm') : '---'}">
+                            </td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 200px;" th:text="${order.shippingAddress}"
+                                    th:title="${order.shippingAddress}"></div>
+                            </td>
+                            <td class="fw-bold text-primary" th:text="${(order.price ?: 0) + ' VNĐ'}"></td>
+                            <td>
+                                <div th:switch="${order.status}">
+                                    <span th:case="'Mới đặt'" class="badge rounded-pill bg-info text-dark px-3 py-2">Mới
+                                        đặt</span>
+                                    <span th:case="'Đã đóng gói'"
+                                        class="badge rounded-pill bg-warning text-dark px-3 py-2">Đã đóng gói</span>
+                                    <span th:case="'Đang giao hàng'"
+                                        class="badge rounded-pill bg-primary px-3 py-2">Đang giao hàng</span>
+                                    <span th:case="'Đã giao hàng'" class="badge rounded-pill bg-success px-3 py-2">Đã
+                                        giao hàng</span>
+                                    <span th:case="*" class="badge rounded-pill bg-secondary px-3 py-2"
+                                        th:text="${order.status}"></span>
+                                </div>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        Cập nhật
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                        <li>
+                                            <form th:action="@{/admin/orders/update-status/{id}(id=${order.id})}"
+                                                method="post">
+                                                <input type="hidden" name="status" value="Đã đóng gói">
+                                                <button type="submit" class="dropdown-item">Đã đóng gói</button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form th:action="@{/admin/orders/update-status/{id}(id=${order.id})}"
+                                                method="post">
+                                                <input type="hidden" name="status" value="Đang giao hàng">
+                                                <button type="submit" class="dropdown-item">Đang giao hàng</button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form th:action="@{/admin/orders/update-status/{id}(id=${order.id})}"
+                                                method="post">
+                                                <input type="hidden" name="status" value="Đã giao hàng">
+                                                <button type="submit" class="dropdown-item">Đã giao hàng</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(orders)}">
+                            <td colspan="7" class="text-center py-5">
+                                <div class="text-muted">Chưa có đơn hàng nào được đặt.</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout::footer}"></footer>
+</body>
+
+</html>

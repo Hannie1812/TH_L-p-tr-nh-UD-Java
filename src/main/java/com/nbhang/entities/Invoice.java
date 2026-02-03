@@ -29,6 +29,8 @@ public class Invoice {
     private Double price;
     @Column(name = "shipping_address", length = 500)
     private String shippingAddress;
+    @Column(name = "status", length = 50)
+    private String status;
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<ItemInvoice> itemInvoices = new ArrayList<>();

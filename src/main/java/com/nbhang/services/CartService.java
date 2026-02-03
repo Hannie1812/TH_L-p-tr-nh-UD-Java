@@ -64,6 +64,7 @@ public class CartService {
         invoice.setPrice(getSumPrice(session));
         invoice.setUser(user);
         invoice.setShippingAddress(shippingAddress);
+        invoice.setStatus("Mới đặt");
         invoiceRepository.save(invoice);
         cart.getCartItems().forEach(item -> {
             var items = new ItemInvoice();
