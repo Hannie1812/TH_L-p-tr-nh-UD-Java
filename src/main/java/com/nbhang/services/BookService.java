@@ -41,8 +41,8 @@ public class BookService {
         return bookRepository.findByAuthor(author);
     }
 
-    public void addBook(Book book) {
-        bookRepository.save(book);
+    public Book addBook(Book book) {
+        return bookRepository.save(book);
     }
 
     public void updateBook(@NotNull Book book) {

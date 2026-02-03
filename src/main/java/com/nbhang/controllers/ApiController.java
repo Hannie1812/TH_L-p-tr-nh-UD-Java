@@ -1,10 +1,15 @@
 package com.nbhang.controllers;
 
+import com.nbhang.entities.Book;
+import com.nbhang.entities.Category;
 import com.nbhang.services.BookService;
 import com.nbhang.services.CartService;
 import com.nbhang.services.CategoryService;
 import com.nbhang.viewmodels.BookGetVm;
+import com.nbhang.viewmodels.BookPostVm;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -39,8 +44,11 @@ public class ApiController {
 
     @DeleteMapping("/books/{id}")
     public ResponseEntity<Void> deleteBookById(@PathVariable Long id) {
+        if (!bookService.getBookById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
         bookService.deleteBookById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/books/search")
@@ -49,5 +57,41 @@ public class ApiController {
                 .stream()
                 .map(BookGetVm::from)
                 .toList());
+    }
+
+    @PostMapping("/books")
+    public ResponseEntity<BookGetVm> createBook(@Valid @RequestBody BookPostVm bookPostVm) {
+        Category category = categoryService.getCategoryById(bookPostVm.categoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + bookPostVm.categoryId()));
+        
+        Book book = Book.builder()
+                .title(bookPostVm.title())
+                .author(bookPostVm.author())
+                .price(bookPostVm.price())
+                .category(category)
+                .build();
+        
+        Book savedBook = bookService.addBook(book);
+        return new ResponseEntity<>(BookGetVm.from(savedBook), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/books/{id}")
+    public ResponseEntity<BookGetVm> updateBook(@PathVariable Long id, @Valid @RequestBody BookPostVm bookPostVm) {
+        Category category = categoryService.getCategoryById(bookPostVm.categoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + bookPostVm.categoryId()));
+        
+        Book book = Book.builder()
+                .id(id)
+                .title(bookPostVm.title())
+                .author(bookPostVm.author())
+                .price(bookPostVm.price())
+                .category(category)
+                .build();
+        
+        bookService.updateBook(book);
+        Book updatedBook = bookService.getBookById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found after update"));
+        
+        return ResponseEntity.ok(BookGetVm.from(updatedBook));
     }
 }
