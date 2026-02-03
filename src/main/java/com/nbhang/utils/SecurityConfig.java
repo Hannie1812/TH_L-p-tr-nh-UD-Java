@@ -4,6 +4,9 @@ import com.nbhang.services.UserService;
 import com.nbhang.services.OAuthService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,13 +23,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
         private final OAuthService oAuthService;
-        private final UserService userService;
+
+        @Autowired
+        private UserService userService;
 
         @Bean
         public UserDetailsService userDetailsService() {
-                return new UserService();
+                return userService;
         }
 
         @Bean
@@ -82,9 +88,21 @@ public class SecurityConfig {
                                                                                                 authentication) -> {
                                                                                         var oidcUser = (DefaultOidcUser) authentication
                                                                                                         .getPrincipal();
+                                                                                        log.info("Google OAuth login attempt for email: {}", oidcUser.getEmail());
                                                                                         userService.saveOauthUser(
                                                                                                         oidcUser.getEmail(),
                                                                                                         oidcUser.getName());
+                                                                                        // Load user by email để đảm bảo lấy đúng user vừa tạo
+                                                                                        var userDetails = userService.loadUserByUsername(oidcUser.getEmail());
+                                                                                        log.info("Loaded user authorities: {}", userDetails.getAuthorities());
+                                                                                        var authToken = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                                                                                                        userDetails,
+                                                                                                        null,
+                                                                                                        userDetails.getAuthorities());
+                                                                                        org.springframework.security.core.context.SecurityContextHolder
+                                                                                                        .getContext()
+                                                                                                        .setAuthentication(
+                                                                                                                        authToken);
                                                                                         response.sendRedirect("/");
                                                                                 })
                                                                 .permitAll())
