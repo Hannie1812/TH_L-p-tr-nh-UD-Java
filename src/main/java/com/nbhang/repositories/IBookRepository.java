@@ -18,7 +18,10 @@ import java.util.List;
 public interface IBookRepository extends PagingAndSortingRepository<Book, Long>, JpaRepository<Book, Long> {
 
     default List<Book> findAllBooks(Integer pageNo, Integer pageSize, String sortBy) {
-        return findAll(PageRequest.of(pageNo, pageSize, Sort.by(sortBy))).getContent();
+        return findAll(PageRequest.of(pageNo, pageSize, Sort.by(sortBy))).getContent()
+                .stream()
+                .filter(book -> book.getQuantity() > 0)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     List<Book> findByTitle(String title);

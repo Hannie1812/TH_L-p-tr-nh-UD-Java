@@ -28,15 +28,18 @@
             <td th:text="${item.getBookId()}"></td>
             <td th:text="${item.getBookName()}"></td>
             <td>
-              <label>
+              <div class="input-group">
+                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(this, -1)" th:attr="data-id=${item.getBookId()}">-</button>
                 <input
                   type="number"
                   min="1"
                   th:value="${item.getQuantity()}"
                   th:attr="data-id=${item.getBookId()}"
                   class="form-control quantity"
+                  readonly
                 />
-              </label>
+                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(this, 1)" th:attr="data-id=${item.getBookId()}">+</button>
+              </div>
             </td>
             <td th:text="${item.getPrice()}"></td>
             <td th:text="${item.getPrice() * item.getQuantity()}"></td>

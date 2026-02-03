@@ -1,13 +1,12 @@
-$(document).ready(function () {
-    $('.quantity').change(function () {
-        let quantity = $(this).val();
-        let id = $(this).attr('data-id');
-        $.ajax({
-            url: '/cart/updateCart/' + id + '/' + quantity,
-            type: 'GET',
-            success: function () {
-                location.reload();
-            }
-        });
-    });
-});
+function updateQuantity(button, delta) {
+    const bookId = button.getAttribute('data-id');
+    const input = button.parentElement.querySelector('.quantity');
+    let currentValue = parseInt(input.value);
+    let newValue = currentValue + delta;
+    if (newValue < 1) {
+        newValue = 1;
+    }
+    input.value = newValue;
+    // Redirect to update URL
+    window.location.href = `/cart/updateCart/${bookId}/${newValue}`;
+}

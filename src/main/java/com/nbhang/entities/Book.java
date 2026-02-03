@@ -2,6 +2,7 @@ package com.nbhang.entities;
 
 import com.nbhang.validators.annotations.ValidCategoryId;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -34,7 +35,7 @@ public class Book {
     @Positive(message = "Price must be greater than 0")
     private Double price;
     @Column(name = "quantity")
-    @Positive(message = "Quantity must be greater than 0")
+    @Min(value = 0, message = "Quantity must be 0 or greater")
     private Integer quantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
