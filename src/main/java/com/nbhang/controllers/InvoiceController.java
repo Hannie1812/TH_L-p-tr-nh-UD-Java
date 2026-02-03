@@ -11,11 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class InvoiceController {
     private final InvoiceService invoiceService;
     private final UserService userService;
@@ -47,10 +49,13 @@ public class InvoiceController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String updateStatus(@PathVariable Long id, @RequestParam("status") String status,
             RedirectAttributes redirectAttributes) {
+        log.info("Attempting to update status for invoice ID: {} to {}", id, status);
         try {
             invoiceService.updateStatus(id, status);
+            log.info("Successfully updated status for invoice ID: {}", id);
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái thành công!");
         } catch (Exception e) {
+            log.error("Failed to update status for invoice ID: {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Cập nhật trạng thái thất bại: " + e.getMessage());
         }
         return "redirect:/admin/orders";

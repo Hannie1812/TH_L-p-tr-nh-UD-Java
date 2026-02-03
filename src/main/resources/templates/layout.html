@@ -26,28 +26,28 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
+              <a class="nav-link active" aria-current="page" href="/">🏠 Trang chủ</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-              <a class="nav-link" href="/books">Sách</a>
+              <a class="nav-link" href="/books">📚 Sách</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
-              <a class="nav-link" href="/books/add">Thêm sách</a>
+              <a class="nav-link" href="/books/add">➕ Thêm</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-              <a class="nav-link" href="/cart">Giỏ hàng</a>
+              <a class="nav-link" href="/cart">🛒 Giỏ hàng</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-              <a class="nav-link" href="/profile">Cá nhân</a>
+              <a class="nav-link" href="/profile">👤 Cá nhân</a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-              <a class="nav-link" href="/orders">Đơn hàng</a>
+              <a class="nav-link" href="/orders">📋 Đơn hàng</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
-              <a class="nav-link" href="/admin/users">Quản lý người dùng</a>
+              <a class="nav-link" href="/admin/users">👥 User</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
-              <a class="nav-link" href="/admin/orders">Quản lý đơn hàng</a>
+              <a class="nav-link" href="/admin/orders">📦 Order</a>
             </li>
           </ul>
 
@@ -62,21 +62,21 @@
             <input class="form-control me-2 search-input" type="search" name="keyword" placeholder="Tìm kiếm sách..."
               aria-label="Search" style="border-radius: 0; background: rgba(255,255,255,0.9);">
             <button class="btn btn-primary search-btn" type="submit"
-              style="border-radius: 0 20px 20px 0; padding: 0.5rem 1.5rem;">
-              Tìm
+              style="border-radius: 0 20px 20px 0; padding: 0.5rem 1.5rem;" title="Tìm kiếm">
+              🔍
             </button>
           </form>
 
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <li sec:authorize="isAuthenticated()" class="nav-item">
               <form th:action="@{/logout}" method="post" class="d-inline">
-                <button class="btn btn-outline-danger ms-2" type="submit">
-                  Đăng xuất
+                <button class="btn btn-outline-danger ms-2" type="submit" title="Đăng xuất">
+                  🚪
                 </button>
               </form>
             </li>
             <li sec:authorize="!isAuthenticated()" class="nav-item">
-              <a class="btn btn-outline-primary" href="/login">Đăng nhập</a>
+              <a class="btn btn-outline-primary" href="/login" title="Đăng nhập">🔑 Đăng nhập</a>
             </li>
           </ul>
         </div>
