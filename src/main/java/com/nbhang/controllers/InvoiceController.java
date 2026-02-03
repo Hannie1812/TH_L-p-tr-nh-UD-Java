@@ -60,4 +60,32 @@ public class InvoiceController {
         }
         return "redirect:/admin/orders";
     }
+
+    // User viewing order details
+    @GetMapping("/orders/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public String viewOrder(@PathVariable Long id, Authentication authentication, Model model) {
+        Invoice invoice = invoiceService.getInvoiceById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+
+        // Check if the user is the owner or an admin
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+        if (!isAdmin && !invoice.getUser().getUsername().equals(authentication.getName())) {
+            throw new RuntimeException("Bạn không có quyền xem đơn hàng này");
+        }
+
+        model.addAttribute("invoice", invoice);
+        return "invoice/detail";
+    }
+
+    // Admin viewing order details
+    @GetMapping("/admin/orders/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String adminViewOrder(@PathVariable Long id, Model model) {
+        Invoice invoice = invoiceService.getInvoiceById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+        model.addAttribute("invoice", invoice);
+        return "invoice/detail";
+    }
 }

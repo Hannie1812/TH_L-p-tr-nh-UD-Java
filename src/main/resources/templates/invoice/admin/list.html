@@ -82,22 +82,31 @@
                                 </div>
                             </td>
                             <td class="text-end pe-4">
-                                <form th:action="@{/admin/orders/update-status/{id}(id=${order.id})}" method="post"
-                                    class="d-flex gap-2 justify-content-end">
-                                    <select name="status" class="form-select form-select-sm" style="width: auto;">
-                                        <option value="Mới đặt" th:selected="${order.status == 'Mới đặt'}">Mới đặt
-                                        </option>
-                                        <option value="Đã đóng gói" th:selected="${order.status == 'Đã đóng gói'}">Đã
-                                            đóng gói</option>
-                                        <option value="Đang giao hàng"
-                                            th:selected="${order.status == 'Đang giao hàng'}">Đang giao hàng</option>
-                                        <option value="Đã giao hàng" th:selected="${order.status == 'Đã giao hàng'}">Đã
-                                            giao hàng</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-save me-1"></i>Lưu
-                                    </button>
-                                </form>
+                                <div class="d-flex gap-2 justify-content-end align-items-center">
+                                    <a th:href="@{/admin/orders/{id}(id=${order.id})}"
+                                        class="btn btn-sm btn-outline-info shadow-sm" title="Xem chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <form th:action="@{/admin/orders/update-status/{id}(id=${order.id})}" method="post"
+                                        class="d-flex gap-2 mb-0">
+                                        <select name="status" class="form-select form-select-sm" style="width: auto;">
+                                            <option value="Mới đặt" th:selected="${order.status == 'Mới đặt'}">Mới đặt
+                                            </option>
+                                            <option value="Đã đóng gói" th:selected="${order.status == 'Đã đóng gói'}">
+                                                Đã
+                                                đóng gói</option>
+                                            <option value="Đang giao hàng"
+                                                th:selected="${order.status == 'Đang giao hàng'}">Đang giao hàng
+                                            </option>
+                                            <option value="Đã giao hàng"
+                                                th:selected="${order.status == 'Đã giao hàng'}">Đã
+                                                giao hàng</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-save me-1"></i>Lưu
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(orders)}">
