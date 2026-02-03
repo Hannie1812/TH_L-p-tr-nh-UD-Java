@@ -30,13 +30,17 @@ public class Book {
     @NotBlank(message = "Title must not be blank")
     private String title;
     @Column(name = "author", length = 50, nullable = false)
-    @Size(min = 1, max = 50, message="Author must be between 1 and 50 characters")@NotBlank(message="Author must not be blank")private String author;
+    @Size(min = 1, max = 50, message = "Author must be between 1 and 50 characters")
+    @NotBlank(message = "Author must not be blank")
+    private String author;
     @Column(name = "price")
     @Positive(message = "Price must be greater than 0")
     private Double price;
     @Column(name = "quantity")
     @Min(value = 0, message = "Quantity must be 0 or greater")
     private Integer quantity;
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ValidCategoryId

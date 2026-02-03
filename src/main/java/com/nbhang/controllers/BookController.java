@@ -5,6 +5,7 @@ import com.nbhang.services.BookService;
 import com.nbhang.entities.Category;
 import com.nbhang.services.CategoryService;
 import com.nbhang.services.CartService;
+import com.nbhang.services.FileStorageService;
 import com.nbhang.daos.Item;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +27,7 @@ public class BookController {
         private final BookService bookService;
         private final CategoryService categoryService;
         private final CartService cartService;
+        private final FileStorageService fileStorageService;
 
         @GetMapping
         public String showAllBooks(
@@ -55,6 +57,7 @@ public class BookController {
         public String addBook(
                         @Valid @ModelAttribute("book") Book book,
                         @NotNull BindingResult bindingResult,
+                        @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
                         Model model) {
                 if (bindingResult.hasErrors()) {
                         var errors = bindingResult.getAllErrors()
@@ -66,7 +69,21 @@ public class BookController {
                                         categoryService.getAllCategories());
                         return "book/add";
                 }
-                bookService.addBook(book);
+
+                // Save book first to get the ID
+                Book savedBook = bookService.addBook(book);
+
+                // Handle image upload if provided
+                if (imageFile != null && !imageFile.isEmpty()) {
+                        try {
+                                String filename = fileStorageService.storeFile(imageFile, savedBook.getId());
+                                savedBook.setImageUrl(filename);
+                                bookService.updateBook(savedBook);
+                        } catch (Exception e) {
+                                model.addAttribute("error", "Failed to upload image: " + e.getMessage());
+                        }
+                }
+
                 return "redirect:/books";
         }
 
@@ -81,6 +98,7 @@ public class BookController {
         @PostMapping("/edit")
         public String editBook(@Valid @ModelAttribute("book") Book book,
                         @NotNull BindingResult bindingResult,
+                        @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
                         Model model) {
                 if (bindingResult.hasErrors()) {
                         var errors = bindingResult.getAllErrors()
@@ -92,6 +110,27 @@ public class BookController {
                                         categoryService.getAllCategories());
                         return "book/edit";
                 }
+
+                // Handle image upload if new image provided
+                if (imageFile != null && !imageFile.isEmpty()) {
+                        try {
+                                // Get old image URL to delete later
+                                var existingBook = bookService.getBookById(book.getId());
+                                String oldImageUrl = existingBook.map(Book::getImageUrl).orElse(null);
+
+                                // Save new image
+                                String filename = fileStorageService.storeFile(imageFile, book.getId());
+                                book.setImageUrl(filename);
+
+                                // Delete old image if exists
+                                if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                                        fileStorageService.deleteFile(oldImageUrl);
+                                }
+                        } catch (Exception e) {
+                                model.addAttribute("error", "Failed to upload image: " + e.getMessage());
+                        }
+                }
+
                 bookService.updateBook(book);
                 return "redirect:/books";
         }
@@ -99,6 +138,12 @@ public class BookController {
         @GetMapping("/delete/{id}")
         public String deleteBook(@PathVariable Long id, RedirectAttributes redirectAttributes) {
                 try {
+                        // Get book to delete associated image
+                        var book = bookService.getBookById(id);
+                        if (book.isPresent() && book.get().getImageUrl() != null) {
+                                fileStorageService.deleteFile(book.get().getImageUrl());
+                        }
+
                         bookService.deleteBookById(id);
                         redirectAttributes.addFlashAttribute("successMessage", "Book deleted successfully!");
                         return "redirect:/books";
