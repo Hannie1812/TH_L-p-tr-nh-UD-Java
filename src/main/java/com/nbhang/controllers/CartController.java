@@ -9,13 +9,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/cart")
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
+    private final com.nbhang.services.UserService userService;
 
     @GetMapping
     public String showCart(HttpSession session,
@@ -52,8 +56,40 @@ public class CartController {
     }
 
     @GetMapping("/checkout")
-    public String checkout(HttpSession session) {
-        cartService.saveCart(session);
-        return "redirect:/cart";
+    public String checkout(HttpSession session, org.springframework.security.core.Authentication authentication,
+            Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        String username = authentication.getName();
+        com.nbhang.entities.User user = userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        model.addAttribute("cart", cartService.getCart(session));
+        model.addAttribute("totalPrice", cartService.getSumPrice(session));
+        model.addAttribute("user", user);
+        return "book/checkout";
+    }
+
+    @PostMapping("/checkout")
+    public String placeOrder(HttpSession session,
+            org.springframework.security.core.Authentication authentication,
+            @RequestParam("shippingAddress") String shippingAddress,
+            RedirectAttributes redirectAttributes) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        String username = authentication.getName();
+        com.nbhang.entities.User user = userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        try {
+            cartService.saveCart(session, user, shippingAddress);
+            redirectAttributes.addFlashAttribute("successMessage", "Đặt hàng thành công!");
+            return "redirect:/books";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đặt hàng thất bại: " + e.getMessage());
+            return "redirect:/cart";
+        }
     }
 }

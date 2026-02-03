@@ -55,13 +55,15 @@ public class CartService {
                 .sum();
     }
 
-    public void saveCart(@NotNull HttpSession session) {
+    public void saveCart(@NotNull HttpSession session, com.nbhang.entities.User user, String shippingAddress) {
         var cart = getCart(session);
         if (cart.getCartItems().isEmpty())
             return;
         var invoice = new Invoice();
-        invoice.setInvoiceDate(new Date(new Date().getTime()));
+        invoice.setInvoiceDate(new Date());
         invoice.setPrice(getSumPrice(session));
+        invoice.setUser(user);
+        invoice.setShippingAddress(shippingAddress);
         invoiceRepository.save(invoice);
         cart.getCartItems().forEach(item -> {
             var items = new ItemInvoice();

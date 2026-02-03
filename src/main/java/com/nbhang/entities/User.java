@@ -48,6 +48,8 @@ public class User implements UserDetails {
     @Length(min = 10, max = 10, message = "Phone must be 10 characters")
     @Pattern(regexp = "^[0-9]*$", message = "Phone must be number")
     private String phone;
+    @Column(name = "address", length = 255)
+    private String address;
     @Column(name = "provider", length = 50)
     private String provider;
 

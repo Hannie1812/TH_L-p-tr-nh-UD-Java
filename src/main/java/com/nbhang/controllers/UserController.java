@@ -67,6 +67,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public String updateProfile(@RequestParam("email") String email,
             @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "address", required = false) String address,
             Authentication authentication,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -77,6 +78,7 @@ public class UserController {
         // Update only the editable fields
         existingUser.setEmail(email);
         existingUser.setPhone(phone);
+        existingUser.setAddress(address);
 
         try {
             userService.updateUser(existingUser);

@@ -27,6 +27,8 @@ public class Invoice {
     @Column(name = "total")
     @Positive(message = "Total must be positive")
     private Double price;
+    @Column(name = "shipping_address", length = 500)
+    private String shippingAddress;
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<ItemInvoice> itemInvoices = new ArrayList<>();
