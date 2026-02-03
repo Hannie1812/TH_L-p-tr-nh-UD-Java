@@ -21,12 +21,12 @@ public class HomeController {
     public String home(Model model, Authentication authentication) {
         if (authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ADMIN"))) {
-            List<Book> lowStockBooks = bookService.getAllBooks(0, Integer.MAX_VALUE, "id")
+            List<Book> outOfStockBooks = bookService.getAllBooks(0, Integer.MAX_VALUE, "id")
                     .stream()
-                    .filter(book -> book.getQuantity() != null && book.getQuantity() <= 1)
+                    .filter(book -> book.getQuantity() != null && book.getQuantity() == 0)
                     .toList();
-            if (!lowStockBooks.isEmpty()) {
-                model.addAttribute("lowStockAlerts", lowStockBooks);
+            if (!outOfStockBooks.isEmpty()) {
+                model.addAttribute("outOfStockAlerts", outOfStockBooks);
             }
         }
         return "home/index";

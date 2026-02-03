@@ -79,13 +79,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr th:each="book : ${books}" th:classappend="${book.getQuantity() < 10} ? 'table-warning'">
+          <tr th:each="book : ${books}" th:if="${book.getQuantity() > 0 or #authorization.expression('hasAnyAuthority(''ADMIN'')')}" th:classappend="${book.getQuantity() == 0 and #authorization.expression('hasAnyAuthority(''ADMIN'')')} ? 'table-danger'">
             <td th:text="${book.getId()}"></td>
             <td th:text="${book.getTitle()}"></td>
             <td th:text="${book.getAuthor()}"></td>
             <td th:text="${book.getPrice()}"></td>
             <td th:text="${book.getQuantity()}">
-              <span th:if="${book.getQuantity() < 10 and #authorization.expression('hasAnyAuthority(''ADMIN'')')}" class="text-danger">Low Stock!</span>
+              <span th:if="${book.getQuantity() == 0}" class="text-danger">Out of Stock!</span>
+              <span th:elseif="${book.getQuantity() < 10 and #authorization.expression('hasAnyAuthority(''ADMIN'')')}" class="text-warning">Low Stock!</span>
             </td>
             <td th:text="${book.getCategory().getName()}"></td>
             <td>
