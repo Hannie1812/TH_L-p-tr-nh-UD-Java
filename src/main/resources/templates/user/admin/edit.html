@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edit User</title>
+  <title>Chỉnh Sửa Người Dùng - Hannie Book</title>
   <th:block th:replace="~{layout :: link-css}"></th:block>
   <th:block th:replace="~{layout::custom-css}"></th:block>
 </head>
@@ -14,67 +14,64 @@
   <th:block th:replace="~{layout :: header}"></th:block>
   <div class="container py-5">
     <div class="row justify-content-center">
-      <div class="col-12 col-lg-6 col-md-8">
-        <div class="card shadow-xl animate-slide-up">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-lg animate-slide-up">
           <div class="card-body p-5">
             <div class="text-center mb-4">
               <div style="font-size: 3.5rem; margin-bottom: 1rem;">✏️</div>
-              <h3 class="card-title">Edit User</h3>
-              <p class="text-secondary">Update user information and permissions</p>
+              <h3 class="gradient-text">Chỉnh Sửa Người Dùng</h3>
+              <p class="text-secondary">Cập nhật thông tin và phân quyền hệ thống</p>
             </div>
 
             <div th:if="${errors}" class="alert alert-danger animate-fade-in">
-              <strong>⚠️ Validation Errors:</strong>
-              <ul class="mb-0 mt-2">
+              <strong>⚠️ Có lỗi xảy ra:</strong>
+              <ul class="mb-0 mt-2 small">
                 <li th:each="error : ${errors}" th:text="${error}"></li>
               </ul>
             </div>
 
             <form th:action="@{'/admin/users/edit/' + ${user.id}}" method="post">
               <div class="form-group mb-3">
-                <label for="username" class="form-label">👤 Username</label>
-                <input type="text" class="form-control" id="username" th:value="${user.username}" readonly />
-                <small class="text-muted">Username cannot be changed</small>
+                <label for="username" class="form-label fw-bold small">👤 Tên người dùng</label>
+                <input type="text" class="form-control bg-light" id="username" th:value="${user.username}" readonly />
+                <small class="text-muted">Tên người dùng không thể thay đổi</small>
               </div>
 
               <div class="form-group mb-3">
-                <label for="email" class="form-label">📧 Email</label>
+                <label for="email" class="form-label fw-bold small">📧 Email</label>
                 <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required />
               </div>
 
               <div class="form-group mb-4">
-                <label for="phone" class="form-label">📱 Phone</label>
+                <label for="phone" class="form-label fw-bold small">📱 Số điện thoại</label>
                 <input type="text" class="form-control" id="phone" name="phone" th:value="${user.phone}"
-                  placeholder="Optional" />
+                  placeholder="Nhập số điện thoại (không bắt buộc)" />
               </div>
 
               <div class="form-group mb-4">
-                <label class="form-label d-block">🔐 Roles</label>
-                <div class="card" style="background: var(--bg-secondary); padding: 1rem;">
+                <label class="form-label d-block fw-bold small">🔐 Vai trò</label>
+                <div class="card border-light"
+                  style="background: rgba(0,0,0,0.02); padding: 1.25rem; border-radius: 12px;">
                   <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" id="roleUser" name="roles" value="USER"
                       th:checked="${#lists.contains(user.roles.![name], 'USER')}" />
                     <label class="form-check-label" for="roleUser">
-                      <strong>USER</strong> - Regular user access
+                      <strong>USER</strong> - Quyền người dùng cơ bản
                     </label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="roleAdmin" name="roles" value="ADMIN"
                       th:checked="${#lists.contains(user.roles.![name], 'ADMIN')}" />
                     <label class="form-check-label" for="roleAdmin">
-                      <strong>ADMIN</strong> - Administrator access
+                      <strong>ADMIN</strong> - Quyền quản trị viên hệ thống
                     </label>
                   </div>
                 </div>
               </div>
 
-              <div class="d-flex gap-3">
-                <a href="/admin/users" class="btn btn-secondary flex-fill">
-                  ← Cancel
-                </a>
-                <button type="submit" class="btn btn-primary flex-fill">
-                  💾 Update User
-                </button>
+              <div class="d-flex gap-3 mt-4">
+                <a href="/admin/users" class="btn btn-outline-secondary flex-fill">Hủy</a>
+                <button type="submit" class="btn btn-primary flex-fill shadow-sm">Cập Nhật</button>
               </div>
             </form>
           </div>

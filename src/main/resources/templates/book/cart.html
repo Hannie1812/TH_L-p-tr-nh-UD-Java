@@ -1,81 +1,84 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initialscale=1.0" />
-    <title>Cart</title>
-    <th:block th:replace="~{layout::link-css}"></th:block>
-    <th:block th:replace="~{layout::custom-css}"></th:block>
-  </head>
-  <body>
-    <th:block th:replace="~{layout::header}"></th:block>
-    <div class="container" th:if="${not #lists.isEmpty(cart.cartItems)}">
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Book ID</th>
-            <th scope="col">Book Name</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Price</th>
-            <th scope="col">Total</th>
-            <th scope="col">Action</th>
-            HƯỚNG DẪN
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="item : ${cart.cartItems}">
-            <td th:text="${item.getBookId()}"></td>
-            <td th:text="${item.getBookName()}"></td>
-            <td>
-              <div class="input-group">
-                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(this, -1)" th:attr="data-id=${item.getBookId()}">-</button>
-                <input
-                  type="number"
-                  min="1"
-                  th:value="${item.getQuantity()}"
-                  th:attr="data-id=${item.getBookId()}"
-                  class="form-control quantity"
-                  readonly
-                />
-                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(this, 1)" th:attr="data-id=${item.getBookId()}">+</button>
-              </div>
-            </td>
-            <td th:text="${item.getPrice()}"></td>
-            <td th:text="${item.getPrice() * item.getQuantity()}"></td>
-            <td>
-              <a
-                class="btn btn-danger"
-                th:href="@{/cart/removeFromCart/{id}(id=${item.getBookId()})}"
-              >
-                Remove
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="row">
-        <div class="col-md-12">
-          <h3>Total: <span th:text="${totalPrice}"></span></h3>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giỏ Hàng - Hannie Book</title>
+  <th:block th:replace="~{layout::link-css}"></th:block>
+  <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body>
+  <th:block th:replace="~{layout::header}"></th:block>
+
+  <div class="container mt-4">
+    <h1 class="gradient-text mb-4 text-center">Giỏ Hàng Của Bạn</h1>
+
+    <div th:if="${not #lists.isEmpty(cart.cartItems)}">
+      <div class="card shadow-sm mb-4">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col" class="ps-4">ID Sách</th>
+                <th scope="col">Tên Sách</th>
+                <th scope="col" style="width: 151px;">Số lượng</th>
+                <th scope="col">Đơn giá</th>
+                <th scope="col">Thành tiền</th>
+                <th scope="col" class="text-center">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="item : ${cart.cartItems}">
+                <td class="ps-4" th:text="${item.getBookId()}"></td>
+                <td class="fw-bold" th:text="${item.getBookName()}"></td>
+                <td>
+                  <div class="input-group input-group-sm">
+                    <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(this, -1)"
+                      th:attr="data-id=${item.getBookId()}">-</button>
+                    <input type="number" min="1" th:value="${item.getQuantity()}" th:attr="data-id=${item.getBookId()}"
+                      class="form-control text-center quantity" readonly />
+                    <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(this, 1)"
+                      th:attr="data-id=${item.getBookId()}">+</button>
+                  </div>
+                </td>
+                <td th:text="${item.getPrice() + ' VNĐ'}"></td>
+                <td class="fw-bold text-primary" th:text="${(item.getPrice() * item.getQuantity()) + ' VNĐ'}"></td>
+                <td class="text-center">
+                  <a class="btn btn-sm btn-outline-danger"
+                    th:href="@{/cart/removeFromCart/{id}(id=${item.getBookId()})}">
+                    Xóa
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="col-md-12 text-center">
-          <a class="btn btn-success" th:href="@{/cart/checkout}">Checkout</a>
-          <a class="btn btn-danger" th:href="@{/cart/clearCart}">Clear Cart</a>
+      </div>
+
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-3 mb-md-0">
+          <h3 class="mb-0">Tổng cộng: <span class="text-primary" th:text="${totalPrice + ' VNĐ'}"></span></h3>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a class="btn btn-outline-danger me-2" th:href="@{/cart/clearCart}">Xóa giỏ hàng</a>
+          <a class="btn btn-success px-4 shadow-sm" th:href="@{/cart/checkout}">Thanh toán ngay</a>
         </div>
       </div>
     </div>
-    <div class="container" th:if="${#lists.isEmpty(cart.cartItems)}">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 offset-md-3 text-center">
-            <h3 class="mt-5">Your cart is empty</h3>
-            <p class="lead">Please add some books to your cart</p>
-            <a class="btn btn-primary" href="/books">Go to list book</a>
-          </div>
-        </div>
-      </div>
+
+    <div th:if="${#lists.isEmpty(cart.cartItems)}" class="text-center py-5">
+      <div class="mb-4" style="font-size: 4rem;">🛒</div>
+      <h3>Giỏ hàng của bạn đang trống</h3>
+      <p class="text-muted mb-4">Hãy chọn những cuốn sách yêu thích của bạn và thêm vào giỏ hàng nhé!</p>
+      <a class="btn btn-primary px-4 shadow-sm" href="/books">Tiếp tục mua sắm</a>
     </div>
-    <th:block th:replace="~{layout::footer}"></th:block>
-    <script th:src="@{/js/cart.js}"></script>
-  </body>
+  </div>
+
+  <th:block th:replace="~{layout::footer}"></th:block>
+  <script th:src="@{/js/cart.js}"></script>
+</body>
+
 </html>

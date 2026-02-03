@@ -71,4 +71,8 @@ public class BookService {
         }
         return bookRepository.searchBookAdvanced(keyword, categoryId);
     }
+
+    public long count() {
+        return bookRepository.count();
+    }
 }

@@ -80,9 +80,9 @@ public class UserController {
 
         try {
             userService.updateUser(existingUser);
-            redirectAttributes.addFlashAttribute("success", "Profile updated successfully");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật hồ sơ thành công");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to update profile: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Cập nhật hồ sơ thất bại: " + e.getMessage());
         }
         return "redirect:/profile";
     }
@@ -96,12 +96,12 @@ public class UserController {
             RedirectAttributes redirectAttributes) {
         String username = authentication.getName();
         if (!newPassword.equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("error", "New passwords do not match");
+            redirectAttributes.addFlashAttribute("error", "Mật khẩu mới không khớp");
             return "redirect:/profile";
         }
         try {
             userService.changePassword(username, currentPassword, newPassword);
-            redirectAttributes.addFlashAttribute("success", "Password changed successfully");
+            redirectAttributes.addFlashAttribute("success", "Đổi mật khẩu thành công");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -139,7 +139,7 @@ public class UserController {
         }
         userService.save(user);
         userService.setDefaultRole(user.getUsername());
-        redirectAttributes.addFlashAttribute("success", "User added successfully");
+        redirectAttributes.addFlashAttribute("success", "Thêm người dùng thành công");
         return "redirect:/admin/users";
     }
 
@@ -178,9 +178,9 @@ public class UserController {
 
         try {
             userService.updateUser(user);
-            redirectAttributes.addFlashAttribute("success", "User updated successfully");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật người dùng thành công");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to update user: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Cập nhật người dùng thất bại: " + e.getMessage());
             return "redirect:/admin/users/edit/" + id;
         }
         return "redirect:/admin/users";
@@ -190,7 +190,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         userService.deleteUser(id);
-        redirectAttributes.addFlashAttribute("success", "User deleted successfully");
+        redirectAttributes.addFlashAttribute("success", "Xóa người dùng thành công");
         return "redirect:/admin/users";
     }
 }

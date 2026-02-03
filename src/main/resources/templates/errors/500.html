@@ -1,29 +1,33 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Internal Server Error</title>
-    <th:block th:replace="~{layout::link-css}"></th:block>
-    <th:block th:replace="~{layout::custom-css}"></th:block>
-  </head>
-  <body>
-    <th:block th:replace="~{layout::header}"></th:block>
-    <div class="d-flex align-items-center justify-content-center vh-25">
-      <div class="text-center">
-        <h1 class="display-1 fw-bold">500</h1>
-        <p class="fs-3">
-          <span class="text-danger">Opps!</span> Internal Server Error.
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>500 - Lỗi Máy Chủ</title>
+  <th:block th:replace="~{layout::link-css}"></th:block>
+  <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body>
+  <th:block th:replace="~{layout::header}"></th:block>
+  <div class="container py-5">
+    <div class="row justify-content-center text-center">
+      <div class="col-md-8">
+        <div class="display-1 fw-bold text-warning mb-4">500</div>
+        <h2 class="mb-4">Ôi hỏng rồi! Máy chủ đã gặp sự cố.</h2>
+        <p class="lead text-muted mb-4">
+          Đã có một lỗi xảy ra trong quá trình xử lý yêu cầu của bạn. Đừng lo, chúng mình đang khắc phục rồi!
         </p>
-        <p class="lead">
-          The server encountered an internal error and was unable to complete
-          your request.
+        <p class="text-secondary small mb-5">
+          Vui lòng kiểm tra lại sau hoặc liên hệ quản trị viên.
         </p>
-        <small class="text-muted"
-          >Please check the server logs for more details.</small
-        ><br />
-        <a href="/" class="btn btn-primary">Back to homepage</a>
+        <a href="/" class="btn btn-primary btn-lg shadow-sm">Quay lại trang chủ</a>
       </div>
     </div>
-    <th:block th:replace="~{layout::footer}"></th:block>
-  </body>
+  </div>
+  <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+
 </html>

@@ -33,15 +33,15 @@ public class BookController {
         public String showAllBooks(
                         @NotNull Model model,
                         @RequestParam(defaultValue = "0") Integer pageNo,
-                        @RequestParam(defaultValue = "20") Integer pageSize,
+                        @RequestParam(defaultValue = "8") Integer pageSize,
                         @RequestParam(defaultValue = "id") String sortBy) {
                 model.addAttribute("books", bookService.getAllBooks(pageNo,
                                 pageSize, sortBy));
                 model.addAttribute("currentPage", pageNo);
                 model.addAttribute("categories",
                                 categoryService.getAllCategories());
-                model.addAttribute("totalPages",
-                                bookService.getAllBooks(pageNo, pageSize, sortBy).size() / pageSize);
+                long totalItems = bookService.count();
+                model.addAttribute("totalPages", (int) Math.ceil((double) totalItems / pageSize));
                 return "book/list";
         }
 
@@ -106,7 +106,7 @@ public class BookController {
         @GetMapping("/edit/{id}")
         public String editBookForm(@NotNull Model model, @PathVariable long id) {
                 var book = bookService.getBookById(id);
-                model.addAttribute("book", book.orElseThrow(() -> new IllegalArgumentException("Book not found")));
+                model.addAttribute("book", book.orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sách")));
                 model.addAttribute("categories", categoryService.getAllCategories());
                 return "book/edit";
         }
@@ -159,7 +159,7 @@ public class BookController {
                         } catch (Exception e) {
                                 System.err.println("Upload failed: " + e.getMessage());
                                 e.printStackTrace();
-                                model.addAttribute("error", "Failed to upload image: " + e.getMessage());
+                                model.addAttribute("error", "Tải ảnh lên thất bại: " + e.getMessage());
                         }
                 } else {
                         System.out.println("No new image - keeping existing imageUrl: " + book.getImageUrl());
@@ -180,10 +180,10 @@ public class BookController {
                         }
 
                         bookService.deleteBookById(id);
-                        redirectAttributes.addFlashAttribute("successMessage", "Book deleted successfully!");
+                        redirectAttributes.addFlashAttribute("successMessage", "Sách đã được xóa thành công!");
                         return "redirect:/books";
                 } catch (Exception e) {
-                        redirectAttributes.addFlashAttribute("errorMessage", "Delete book failed: " + e.getMessage());
+                        redirectAttributes.addFlashAttribute("errorMessage", "Xóa sách thất bại: " + e.getMessage());
                         return "redirect:/books";
                 }
         }
@@ -206,7 +206,7 @@ public class BookController {
                         @RequestParam(required = false) String keyword,
                         @RequestParam(required = false) Long categoryId,
                         @RequestParam(defaultValue = "0") Integer pageNo,
-                        @RequestParam(defaultValue = "20") Integer pageSize,
+                        @RequestParam(defaultValue = "8") Integer pageSize,
                         @RequestParam(defaultValue = "id") String sortBy) {
                 model.addAttribute("books", bookService.searchBook(keyword, categoryId));
                 model.addAttribute("currentPage", pageNo);

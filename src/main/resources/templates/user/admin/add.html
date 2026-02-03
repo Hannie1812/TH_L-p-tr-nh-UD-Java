@@ -1,55 +1,63 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add User</title>
-    <th:block th:replace="~{layout :: link-css}"></th:block>
-    <th:block th:replace="~{layout::custom-css}"></th:block>
-  </head>
-  <body>
-    <th:block th:replace="~{layout :: header}"></th:block>
-    <div class="container py-5">
-      <div class="row justify-content-center">
-        <div class="col-12 col-lg-6 col-md-8">
-          <div class="card shadow">
-            <div class="card-body p-5">
-              <h3 class="card-title text-center mb-4">Add New User</h3>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
-              <div th:if="${errors}" class="alert alert-danger">
-                <ul>
-                  <li th:each="error : ${errors}" th:text="${error}"></li>
-                </ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thêm Người Dùng - Hannie Book</title>
+  <th:block th:replace="~{layout :: link-css}"></th:block>
+  <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body>
+  <th:block th:replace="~{layout :: header}"></th:block>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-lg animate-fade-in">
+          <div class="card-body p-5">
+            <h3 class="gradient-text text-center mb-4">Thêm Người Dùng Mới</h3>
+
+            <div th:if="${errors}" class="alert alert-danger animate-fade-in">
+              <ul class="mb-0 small">
+                <li th:each="error : ${errors}" th:text="${error}"></li>
+              </ul>
+            </div>
+
+            <form th:action="@{/admin/users/add}" method="post" th:object="${user}">
+              <div class="form-group mb-3 text-start">
+                <label for="username" class="form-label fw-bold small">Tên người dùng</label>
+                <input type="text" class="form-control" id="username" th:field="*{username}" required
+                  placeholder="Nhập tên đăng nhập" />
+              </div>
+              <div class="form-group mb-3 text-start">
+                <label for="password" class="form-label fw-bold small">Mật khẩu</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" required
+                  placeholder="Nhập mật khẩu" />
+              </div>
+              <div class="form-group mb-3 text-start">
+                <label for="email" class="form-label fw-bold small">Email</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required
+                  placeholder="Nhập địa chỉ email" />
+              </div>
+              <div class="form-group mb-4 text-start">
+                <label for="phone" class="form-label fw-bold small">Số điện thoại</label>
+                <input type="text" class="form-control" id="phone" th:field="*{phone}" required
+                  placeholder="Nhập số điện thoại" />
               </div>
 
-              <form th:action="@{/admin/users/add}" method="post" th:object="${user}">
-                <div class="form-group mb-3">
-                  <label for="username">Username</label>
-                  <input type="text" class="form-control" id="username" name="username" required />
-                </div>
-                <div class="form-group mb-3">
-                  <label for="password">Password</label>
-                  <input type="password" class="form-control" id="password" name="password" required />
-                </div>
-                <div class="form-group mb-3">
-                  <label for="email">Email</label>
-                  <input type="email" class="form-control" id="email" name="email" required />
-                </div>
-                <div class="form-group mb-3">
-                  <label for="phone">Phone</label>
-                  <input type="text" class="form-control" id="phone" name="phone" required />
-                </div>
-                <div class="d-flex justify-content-between">
-                  <a href="/admin/users" class="btn btn-secondary">Cancel</a>
-                  <button type="submit" class="btn btn-primary">Add User</button>
-                </div>
-              </form>
-            </div>
+              <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="/admin/users" class="text-decoration-none">← Quay lại danh sách</a>
+                <button type="submit" class="btn btn-primary px-4 shadow-sm">Tạo Người Dùng</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-    <th:block th:replace="~{layout :: footer}"></th:block>
-  </body>
+  </div>
+  <th:block th:replace="~{layout :: footer}"></th:block>
+</body>
+
 </html>
