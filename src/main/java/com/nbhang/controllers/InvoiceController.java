@@ -64,19 +64,39 @@ public class InvoiceController {
     // User viewing order details
     @GetMapping("/orders/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public String viewOrder(@PathVariable Long id, Authentication authentication, Model model) {
-        Invoice invoice = invoiceService.getInvoiceById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+    public String viewOrder(@PathVariable Long id, Authentication authentication, Model model,
+            RedirectAttributes redirectAttributes) {
+        log.info("User {} attempting to view order detail for ID: {}", authentication.getName(), id);
+        try {
+            Invoice invoice = invoiceService.getInvoiceById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
 
-        // Check if the user is the owner or an admin
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ADMIN"));
-        if (!isAdmin && !invoice.getUser().getUsername().equals(authentication.getName())) {
-            throw new RuntimeException("Bạn không có quyền xem đơn hàng này");
+            // Check if the user is the owner or an admin
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+
+            String currentUsername = authentication.getName();
+            // Check if user is linked to invoice
+            boolean isOwner = invoice.getUser() != null &&
+                    invoice.getUser().getUsername() != null &&
+                    invoice.getUser().getUsername().equalsIgnoreCase(currentUsername);
+
+            if (!isAdmin && !isOwner) {
+                log.warn("Access denied. Current User: '{}', Invoice Owner: '{}' (Invoice ID: {})",
+                        currentUsername,
+                        (invoice.getUser() != null ? invoice.getUser().getUsername() : "null"),
+                        id);
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền xem đơn hàng này.");
+                return "redirect:/orders";
+            }
+
+            model.addAttribute("invoice", invoice);
+            return "invoice/detail";
+        } catch (Exception e) {
+            log.error("Error viewing order ID: {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/orders";
         }
-
-        model.addAttribute("invoice", invoice);
-        return "invoice/detail";
     }
 
     // Admin viewing order details

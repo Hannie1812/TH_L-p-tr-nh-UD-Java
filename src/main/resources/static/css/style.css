@@ -178,7 +178,7 @@ footer,
 }
 
 /* ===================================
-   Enhanced Cards
+   Enhanced Cards & Glassmorphism
    =================================== */
 .card {
     border: none;
@@ -187,6 +187,23 @@ footer,
     transition: all var(--transition-base);
     overflow: hidden;
     background: white;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    transition: all var(--transition-base);
+}
+
+.glass-card:hover {
+    box-shadow: var(--shadow-2xl);
+    border-color: rgba(255, 255, 255, 0.6);
 }
 
 .card:hover {

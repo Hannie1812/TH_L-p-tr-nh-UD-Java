@@ -69,7 +69,8 @@
             </p>
             <div class="mt-auto">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="h5 mb-0 text-primary" th:text="${book.price + ' VNĐ'}">0 VNĐ</span>
+                <span class="h5 mb-0 text-primary"
+                  th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 VNĐ</span>
                 <small class="text-muted" th:text="${'Còn ' + book.quantity}">Còn 0</small>
               </div>
             </div>
