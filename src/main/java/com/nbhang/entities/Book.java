@@ -26,18 +26,18 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "title", length = 50, nullable = false)
-    @Size(min = 1, max = 50, message = "Title must be between 1 and 50 characters")
-    @NotBlank(message = "Title must not be blank")
+    @Size(min = 1, max = 50, message = "Tiêu đề phải từ 1 đến 50 ký tự")
+    @NotBlank(message = "Tiêu đề không được để trống")
     private String title;
     @Column(name = "author", length = 50, nullable = false)
-    @Size(min = 1, max = 50, message = "Author must be between 1 and 50 characters")
-    @NotBlank(message = "Author must not be blank")
+    @Size(min = 1, max = 50, message = "Tác giả phải từ 1 đến 50 ký tự")
+    @NotBlank(message = "Tác giả không được để trống")
     private String author;
     @Column(name = "price")
-    @Positive(message = "Price must be greater than 0")
+    @Positive(message = "Giá phải lớn hơn 0")
     private Double price;
     @Column(name = "quantity")
-    @Min(value = 0, message = "Quantity must be 0 or greater")
+    @Min(value = 0, message = "Số lượng phải từ 0 trở lên")
     private Integer quantity;
     @Column(name = "image_url", length = 255)
     private String imageUrl;

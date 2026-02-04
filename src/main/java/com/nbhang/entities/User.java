@@ -32,21 +32,21 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "username", length = 50, unique = true)
-    @NotBlank(message = "Username is required")
-    @Size(min = 1, max = 50, message = "Username must be between 1 and 50 characters")
+    @NotBlank(message = "Tên đăng nhập không được để trống")
+    @Size(min = 1, max = 50, message = "Tên đăng nhập phải từ 1 đến 50 ký tự")
     @ValidUsername
     private String username;
     @Column(name = "password", length = 250)
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "Mật khẩu không được để trống")
     private String password;
     @Column(name = "email", length = 50, unique = true)
-    @NotBlank(message = "Email is required")
-    @Size(min = 1, max = 50, message = "Email must be between 1 and 50 characters")
+    @NotBlank(message = "Email không được để trống")
+    @Size(min = 1, max = 50, message = "Email phải từ 1 đến 50 ký tự")
     @Email
     private String email;
     @Column(name = "phone", length = 10, unique = true)
-    @Length(min = 10, max = 10, message = "Phone must be 10 characters")
-    @Pattern(regexp = "^[0-9]*$", message = "Phone must be number")
+    @Length(min = 10, max = 10, message = "Số điện thoại phải có 10 chữ số")
+    @Pattern(regexp = "^[0-9]*$", message = "Số điện thoại phải là số")
     private String phone;
     @Column(name = "address", length = 255)
     private String address;

@@ -23,8 +23,8 @@ public class Category {
     @Column(name = "id")
     private Long id;
     @Column(name = "name", length = 50, nullable = false)
-    @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
-    @NotBlank(message = "Name must not be blank")
+    @Size(min = 1, max = 50, message = "Tên danh mục phải từ 1 đến 50 ký tự")
+    @NotBlank(message = "Tên danh mục không được để trống")
     private String name;
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @ToString.Exclude

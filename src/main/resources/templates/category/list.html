@@ -1,0 +1,66 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <title>Quản Lý Danh Mục - Hannie Book</title>
+    <th:block th:replace="~{layout :: link-css}"></th:block>
+    <th:block th:replace="~{layout :: custom-css}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{layout :: header}"></th:block>
+
+    <div class="container mt-4">
+        <h1 class="gradient-text text-center mb-4">Quản Lý Danh Mục</h1>
+
+        <div th:if="${successMessage}" class="alert alert-success animate-fade-in text-center">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger animate-fade-in text-center">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-3">
+            <a href="/admin/categories/add" class="btn btn-primary shadow-sm"><i class="bi bi-plus-circle me-1"></i>Thêm
+                Danh Mục Mới</a>
+            <form th:action="@{/admin/categories/search}" method="get" class="d-flex">
+                <input class="form-control me-2" type="search" name="name" placeholder="Tìm kiếm danh mục..."
+                    th:value="${searchTerm}" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="text-center">ID</th>
+                            <th scope="col">Tên Danh Mục</th>
+                            <th scope="col" class="text-center">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="category : ${categories}">
+                            <td class="text-center fw-bold" th:text="${category.id}"></td>
+                            <td th:text="${category.name}"></td>
+                            <td class="text-center">
+                                <a th:href="@{/admin/categories/edit/{id}(id=${category.id})}"
+                                    class="btn btn-sm btn-outline-primary me-2 shadow-sm"><i
+                                        class="bi bi-pencil-square"></i> Sửa</a>
+                                <a th:href="@{/admin/categories/delete/{id}(id=${category.id})}"
+                                    class="btn btn-sm btn-outline-danger shadow-sm"
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa không?')"><i
+                                        class="bi bi-trash"></i> Xóa</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout :: footer}"></th:block>
+</body>
+
+</html>

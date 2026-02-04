@@ -2,6 +2,7 @@ package com.nbhang.controllers;
 
 import com.nbhang.entities.Category;
 import com.nbhang.services.CategoryService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/categories")
+@RequestMapping("/admin/categories")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -35,21 +37,21 @@ public class CategoryController {
 
     // Xử lý thêm danh mục mới
     @PostMapping("/add")
-    public String addCategory(@ModelAttribute("category") Category category, 
-                             RedirectAttributes redirectAttributes) {
+    public String addCategory(@ModelAttribute("category") Category category,
+            RedirectAttributes redirectAttributes) {
         try {
             categoryService.addCategory(category);
             redirectAttributes.addFlashAttribute("successMessage", "Thêm danh mục thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Thêm danh mục thất bại: " + e.getMessage());
         }
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
 
     // Hiển thị form sửa danh mục
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model, 
-                              RedirectAttributes redirectAttributes) {
+    public String showEditForm(@PathVariable Long id, Model model,
+            RedirectAttributes redirectAttributes) {
         try {
             Category category = categoryService.getCategoryById(id)
                     .orElseThrow(() -> new RuntimeException("Danh mục không tồn tại"));
@@ -57,21 +59,21 @@ public class CategoryController {
             return "category/edit";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/categories";
+            return "redirect:/admin/categories";
         }
     }
 
     // Xử lý cập nhật danh mục
     @PostMapping("/edit")
     public String updateCategory(@ModelAttribute("category") Category category,
-                                RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             categoryService.updateCategory(category);
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật danh mục thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Cập nhật danh mục thất bại: " + e.getMessage());
         }
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
 
     // Xóa danh mục
@@ -87,7 +89,7 @@ public class CategoryController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Xóa danh mục thất bại: " + e.getMessage());
         }
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
 
     // Tìm kiếm danh mục theo tên

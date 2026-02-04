@@ -36,9 +36,6 @@
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
               <a class="nav-link" href="/books"><i class="bi bi-book me-1"></i>Sách</a>
             </li>
-            <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
-              <a class="nav-link" href="/books/add"><i class="bi bi-plus-circle me-1"></i>Thêm</a>
-            </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
               <a class="nav-link" href="/cart"><i class="bi bi-cart me-1"></i>Giỏ hàng</a>
             </li>
@@ -50,6 +47,9 @@
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
               <a class="nav-link" href="/admin/users"><i class="bi bi-people me-1"></i>User</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+              <a class="nav-link" href="/admin/categories"><i class="bi bi-tags me-1"></i>Category</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
               <a class="nav-link" href="/admin/orders"><i class="bi bi-box me-1"></i>Order</a>
@@ -105,6 +105,9 @@
         Hệ thống Quản lý Sách Hiện đại
       </p>
     </div>
+    <a href="/cart" class="sticky-cart-btn shadow-lg" title="Xem giỏ hàng">
+      <i class="bi bi-cart-fill"></i>
+    </a>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/jquery-3.7.0.min.js}"></script>
   </footer>
